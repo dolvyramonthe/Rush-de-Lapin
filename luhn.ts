@@ -2,14 +2,14 @@ import { exit } from "process";
 
 const command: string[] = process.argv.slice(2);
 const option: string = command[0];
-const checkNumber: number = parseInt(command[1], 10);
+let checkNumber: number = parseInt(command[1], 10);
 
 if(!checkNumber || !option || (option.toLowerCase() !== '-c' && option.toLowerCase() !== '-f')) {
     console.log("Bad use of the programme");
     exit();
 }
 
-function checkLuhn(num: number) {
+function checkLuhn(num: number): number {
     let strNum: string = num.toString();
     let reversedStrNum: string = "";
     let result: string = "";
@@ -33,25 +33,27 @@ function checkLuhn(num: number) {
         }
     }
 
-    console.log(result);
-
     for (const iterator of result) {
         sumResult += Number(iterator);
     }
 
-    if(option.toLowerCase() === '-c') {
-        if(sumResult % 10 === 0) {
-            console.log("OK");
-        } else {
-            console.log("KO");
-        }
-    } else if(option.toLowerCase() === '-f') {
-        if(sumResult % 10 !== 0) {
-            const luhnKey: number = 10  - (sumResult % 10);
-            console.log(luhnKey);
-        }
-    }
-    
+    return sumResult;
 }
 
-checkLuhn(checkNumber);
+if(option.toLowerCase() === '-c') {
+    const resultVal: number = checkLuhn(checkNumber);
+
+    if(resultVal % 10 === 0) {
+        console.log("OK");
+    } else {
+        console.log("KO");
+    }
+} else if (option.toLowerCase() === '-f') {
+    checkNumber = checkNumber * 10;
+    const resultVal: number = checkLuhn(checkNumber);
+
+    if (resultVal % 10 !== 0) {
+        const luhnKey: number = 10 - (resultVal % 10);
+        console.log(luhnKey);
+    }
+}
